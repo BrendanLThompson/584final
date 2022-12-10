@@ -19,6 +19,20 @@ const handleOnClick = (index) => {
   anime({
     targets: ".tile",
     opacity: toggled ? 0 : 1,
+    translateX: anime.stagger(10, {
+      grid: [columns, rows],
+      from: index,
+      axis: "x",
+    }),
+    translateY: anime.stagger(10, {
+      grid: [columns, rows],
+      from: index,
+      axis: "y",
+    }),
+    rotateZ: anime.stagger([0, 90], {
+      grid: [columns, rows],
+      from: index,
+    }),
     delay: anime.stagger(50, {
       grid: [columns, rows],
       from: index,
@@ -61,14 +75,6 @@ const createGrid = () => {
 createGrid();
 
 window.onresize = () => createGrid();
-function App() {
-  return (
-    <center>
-      <div>
-        <TextField class="search" />
-      </div>
-    </center>
-  );
-}
+function App() {}
 
 export default App;
