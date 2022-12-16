@@ -2,7 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import anime from "animejs";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
 const wrapper = document.getElementById("tiles");
 let columns = 0,
@@ -76,5 +76,4 @@ createGrid();
 
 window.onresize = () => createGrid();
 function App() {}
-
 export default App;

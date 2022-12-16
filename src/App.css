@@ -81,3 +81,61 @@ body.toggled > #tiles > .tile:hover {
   width: 50vw;
   z-index: 3;
 }
+
+#space{
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 480px;
+  min-height: 40px;
+  padding: 20px;
+  z-index: 3;
+}
+#space2{
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 480px;
+  min-height: 40px;
+  padding: 20px;
+  z-index: 3;
+}
+
+.btn{
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  background-color: rgb(60, 186, 146);
+  border-width: 0px;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 480px;
+  min-height: 40px;
+  padding: 20px;
+}
+.btn:hover {
+  background: rgb(114, 175, 211);
+  transition: all 0.2s ease-in-out;
+  color: #ffffff;
+}
+
+.centered-btn {
+  left: 50%;
+  position: absolute;
+  top: 20%;
+  transform: translate(-50%, -50%);
+}
+.centered-btn2 {
+  left: 50%;
+  position: absolute;
+  top: 70%;
+  transform: translate(-50%, -50%);
+}
