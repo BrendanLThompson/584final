@@ -25,7 +25,7 @@ body {
     var(--g2),
     var(--g1)
   );
-  background-size: 400%;
+  background-size: 200%;
   height: 100vh;
   overflow: hidden;
   margin: 0px;
@@ -47,11 +47,10 @@ body.toggled > #tiles > .tile:hover {
 }
 
 #tiles {
-  height: calc(100vh);
-  width: calc(100vw);
+  height: 100vh;
+  width: 100vw;
   position: relative;
-  z-index: 2;
-  
+  z-index: 0;
   display: grid;
   grid-template-columns: repeat(var(--columns), 1fr);
   grid-template-rows: repeat(var(--rows), 1fr);
@@ -82,17 +81,80 @@ body.toggled > #tiles > .tile:hover {
   z-index: 3;
 }
 
-.search{
+#space{
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 480px;
+  min-height: 40px;
+  padding: 20px;
+  z-index:2;
+}
+#space2{
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 480px;
+  min-height: 40px;
+  padding: 20px;
+  z-index: 2;
+}
+
+.btn{
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  background-color: rgb(60, 186, 146);
+  border-width: 0px;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 480px;
+  min-height: 40px;
+  padding: 20px;
+  padding-bottom: 20px;
+}
+.btn:hover {
+  background: rgb(114, 175, 211);
+  transition: all 0.2s ease-in-out;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.centered-scr {
+  background-color: rgba(114, 182, 245, 0.3);
+  border-radius: 100px;
   left: 50%;
   position: absolute;
-  top: 20%;
+  top: 52%;
   transform: translate(-50%, -50%);
-  width: 500px;
-  height: 50px;
-  font-size: 37px;
-  background-color: white;
-  color:black;
+  z-index: 5;
+}
+.centered-btn {
+  left: 50%;
+  position: absolute;
+  top: 10%;
+  transform: translate(-50%, -50%);
   z-index: 3;
-  border-radius: 15px;
-  border: 3px solid;
+}
+.centered-btnleft {
+  left: 50%;
+  position: absolute;
+  top: 82%;
+  transform: translate(-50%, -50%);
+z-index: 3;
+}
+.centered-btnright {
+  left: 50%;
+  position: absolute;
+  top: 70%;
+  transform: translate(-50%, -50%);
+z-index: 3;
 }

@@ -4,6 +4,8 @@ import anime from "animejs";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField } from "@material-ui/core";
 import backend from "./backend.js";
+import { styled } from "@mui/material/styles";
+import { Button, ButtonProps } from "@mui/material/Button";
 
 const wrapper = document.getElementById("tiles");
 let columns = 0,
@@ -20,6 +22,20 @@ const handleOnClick = (index) => {
   anime({
     targets: ".tile",
     opacity: toggled ? 0 : 1,
+    translateX: anime.stagger(10, {
+      grid: [columns, rows],
+      from: index,
+      axis: "x",
+    }),
+    translateY: anime.stagger(10, {
+      grid: [columns, rows],
+      from: index,
+      axis: "y",
+    }),
+    rotateZ: anime.stagger([0, 90], {
+      grid: [columns, rows],
+      from: index,
+    }),
     delay: anime.stagger(50, {
       grid: [columns, rows],
       from: index,
@@ -62,16 +78,55 @@ const createGrid = () => {
 createGrid();
 
 window.onresize = () => createGrid();
+
+const ColorButton = styled(Button)(() => ({
+  backgroundColor: "rgb(60, 186, 146)",
+  "&:hover": {
+    backgroundColor: "rgb(114, 175, 211)",
+  },
+}));
 function App() {
   return (
-    <center>
-      <div>
-        <TextField class="search" />
+    <div>
+      <div id="space" class="centered-btn">
+        <ColorButton
+          variant="contained"
+          id="btn"
+          class="btn" /*onclick="randSong()"*/
+        >
+          Get a Random Song
+        </ColorButton>
       </div>
-    </center>
+      <div class="flex">
+        <iframe
+          id="embed-uri"
+          width="500"
+          height="580"
+          frameborder="0"
+          allow="encrypted-media"
+        ></iframe>
+      </div>
+      <div id="space2" class="centered-btnleft">
+        <ColorButton
+          variant="contained"
+          id="addPlayList"
+          class="btn" /*onclick = "playListMaker()"*/
+        >
+          Add Song To PlayList
+        </ColorButton>
+      </div>
+      <div id="space2" class="centered-btnright">
+        <ColorButton
+          variant="contained"
+          id="addToSpotify"
+          class="btn" /*onclick = "addToSpotify()"*/
+        >
+          Add Songs to Spotify
+        </ColorButton>
+      </div>
+      <div id="playList" value="1"></div>
+    </div>
   );
 }
-
-
 
 export default App;
