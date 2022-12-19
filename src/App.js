@@ -127,7 +127,7 @@ const authEndpoint = "https://accounts.spotify.com/authorize";
 
 // Replace with your app's client ID, redirect URI and desired scopes
 const Id = "1690ac681878421d8748db804a2b0c27";
-const Uri = "http://localhost:3000/";
+const Uri = "https://584-final.netlify.app/#";
 const scopes = ["streaming"];
 
 // If there is no token, redirect to Spotify authorization
