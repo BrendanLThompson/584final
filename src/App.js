@@ -1,5 +1,5 @@
 import logo from "./logo.svg";
-import "./App.css";
+import "./App.scss";
 import anime from "animejs";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField } from "@material-ui/core";
