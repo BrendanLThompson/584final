@@ -3,9 +3,12 @@ import "./App.css";
 import anime from "animejs";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField } from "@material-ui/core";
-import backend from "./backend.js";
+//import backend from "./backend.js";
 import { styled } from "@mui/material/styles";
-import { Button, ButtonProps } from "@mui/material/Button";
+import Button from "@mui/material/Button";
+import { useEffect, useState } from "react";
+import $ from 'jquery';
+import PlayList from "./PlayList";
 
 const wrapper = document.getElementById("tiles");
 let columns = 0,
@@ -85,46 +88,273 @@ const ColorButton = styled(Button)(() => ({
     backgroundColor: "rgb(114, 175, 211)",
   },
 }));
+
+
+
+
+var SpotifyWebApi = require('spotify-web-api-node');
+
+// credentials are optional
+var Spotify = new SpotifyWebApi();
+
+
+  const playlistDoc = document.getElementById("playList")
+
+let seed = '?!';
+let offset = -1;
+let currData;
+const hash = window.location.hash
+  .substring(1)
+  .split("&")
+  .reduce(function (initial, item) {
+    if (item) {
+      var parts = item.split("=");
+      initial[parts[0]] = decodeURIComponent(parts[1]);
+    }
+    return initial;
+  }, {});
+window.location.hash = "";
+
+// Set token
+let _token = hash.access_token;
+const authEndpoint = "https://accounts.spotify.com/authorize";
+
+// Replace with your app's client ID, redirect URI and desired scopes
+const Id = "1690ac681878421d8748db804a2b0c27";
+const Uri = "http://localhost:3000/";
+const scopes = ["streaming"];
+
+// If there is no token, redirect to Spotify authorization
+if (!_token) {
+  window.location = `${authEndpoint}?client_id=${Id}&redirect_uri=${Uri}&scope=${scopes.join(
+    "%20"
+  )}&response_type=token`;
+}
+
+// Set up the Web Playback SDK
+
+let dev;
+
+
+
+function genQuery(length) {
+  var result = "";
+  var char = "abcdefghijklmnopqrstuvwxyz";
+  var charLength = char.length;
+  for (var i = 0; i < length; i++) {
+    result += char.charAt(Math.floor(Math.random() * charLength));
+  }
+  return result;
+}
+
+
+
+var playList = []
+
 function App() {
+  window.onSpotifyPlayerAPIReady = () => {
+    const player = new Spotify.Player({
+      name: "Just a Random Song",
+      getOAuthToken: (cb) => {
+        cb(_token);
+      },
+    });
+  
+    // Playback status updates
+    player.on("player_state_changed", (state) => {
+      if (
+        state.paused &&
+        state.position === 0 &&
+        state.restrictions.disallow_resuming_reasons &&
+        state.restrictions.disallow_resuming_reasons[0] === "not_paused"
+      ) {
+        randSong();
+      }
+    });
+  
+    // Ready
+    player.on("ready", (data) => {
+      dev = data.device_id;
+    });
+  
+    // Connect to the player!
+    player.connect();
+  };
+  function randSong() {
+    seed = genQuery(2);
+    offset = Math.floor(Math.random() * 500);
+  
+    $.ajax({
+      url:
+        "https://api.spotify.com/v1/search?type=track&offset=" +
+        offset +
+        "&limit=2&q=" +
+        seed,
+      type: "GET",
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer " + _token);
+      },
+      success: function (data) {
+        currData = data;
+        console.log(currData)
+  
+        let track = data.tracks.items[0].uri;
+        $("#current-track-name-save").attr("data-song", data.tracks.items[0].uri);
+        $("#current-track-name-save").attr("src");
+        $("#embed-uri").attr(
+          "src",
+          "https://open.spotify.com/embed/track/" + data.tracks.items[0].id
+        );
+        $("#current-track-name-save").css("display", "block");
+      },
+    });
+  }
+
+  
+const [playListHook, changePlayList] = useState([])
+function playListMaker() {
+  if(offset == -1) {
+    console.log("No song selected")
+    return;
+  }
+  playList.push({
+    offset: offset,
+    seed: seed,
+    liked: "",
+    songName: currData.tracks.items[0].name,
+    songURL: currData.tracks.items[0].external_urls.spotify,
+    artistURL: currData.tracks.items[0].artists[0].external_urls.spotify,
+    artists: currData.tracks.items[0].artists.map(temp => " " + temp.name),
+    id: currData.tracks.items[0].id
+  })
+  changePlayList(playList)
+  //updatePlayList();
+}
+
+function removeSong(curr) {
+  playList.splice(curr,1)
+  changePlayList(playList)
+  //updatePlayList();
+}
+function playSong(curr) {
+  $.ajax({
+    url:
+      "https://api.spotify.com/v1/search?type=track&offset=" +
+      playList[curr].offset +
+      "&limit=2&q=" +
+      playList[curr].seed,
+    type: "GET",
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Authorization", "Bearer " + _token);
+    },
+    success: function (data) {
+      currData = data;
+      let track = data.tracks.items[0].uri;
+      $("#current-track-name-save").attr("data-song", data.tracks.items[0].uri);
+      $("#current-track-name-save").attr("src");
+      $("#embed-uri").attr(
+        "src",
+        "https://open.spotify.com/embed/track/" + data.tracks.items[0].id
+      );
+      $("#current-track-name-save").css("display", "block");
+    },
+  });
+}
+
+function changeLike(curr) {
+  playList[curr].liked == "&#x2665" ? playList[curr].liked = "" : playList[curr].liked = "&#x2665";
+  changePlayList(playList)
+  //updatePlayList();
+}
+
+function openSongInSpotify(curr) {
+  window.open(playList[curr].songURL)
+}
+
+function openArtistInSpotify(curr) {
+  window.open(playList[curr].artistURL)
+}
+
+function clearPlayList() {
+  playList = []
+  changePlayList(playList)
+}
+
+function addToSpotify() {
+  playList.map((curr) => {
+    $.ajax({
+      url:
+        "https://api.spotify.com/v1/me/tracks?ids=" + curr.id,
+      type: "PUT",
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer " + "BQDTijiPMpzMDMYLQh7mSfTlC5krunAiNLtff7SvgADMsC9dDjEFrbx_evZ5l7u-Rc1KlIHuD5OG4ju-4SkaKU6WvSbbxv80AdK6PAQ8INJsgwdP6mMQZXNE6QJnZvLS-BnCES3-jB3QYBHEUN_c_f3tz2g5f6Pul9wwMUuia8bSRW94nwYfAUkfcrnWRdNVM-JguYy2AbhXTvOrD8-iH-8C6wMJ01Hv4UbrG-vO6Koi-6Sl1Cf0eg");
+      },
+      success: function (data) {
+        console.log(data)
+      },
+    });
+  });
+}
+
+
   return (
     <div>
-      <div id="space" class="centered-btn">
+      <div id="space2">
+        <ColorButton
+          variant="contained"
+          id="clearPlayList"
+          className="btn" onClick = {clearPlayList}
+        >
+          Clear PlayList
+        </ColorButton>
+      </div>
+      <div id="space" className="centered-btn">
         <ColorButton
           variant="contained"
           id="btn"
-          class="btn" /*onclick="randSong()"*/
+          className="btn" onClick={randSong}
         >
           Get a Random Song
         </ColorButton>
       </div>
-      <div class="flex">
+      <div className="flex">
         <iframe
           id="embed-uri"
           width="500"
           height="580"
-          frameborder="0"
+          frameBorder="0"
           allow="encrypted-media"
         ></iframe>
       </div>
-      <div id="space2" class="centered-btnleft">
+      <div id="space2" className="centered-btnleft">
         <ColorButton
           variant="contained"
           id="addPlayList"
-          class="btn" /*onclick = "playListMaker()"*/
+          className="btn" onClick = {playListMaker}
         >
           Add Song To PlayList
         </ColorButton>
       </div>
-      <div id="space2" class="centered-btnright">
+      <div id="space2" className="centered-btnright">
         <ColorButton
           variant="contained"
           id="addToSpotify"
-          class="btn" /*onclick = "addToSpotify()"*/
+          className="btn" onClick = {addToSpotify}
         >
           Add Songs to Spotify
         </ColorButton>
       </div>
-      <div id="playList" value="1"></div>
+      {playListHook.map((curr, ind) => {
+        {console.log(curr)}
+        return (
+        <div id = {curr}>
+          <h1>
+          {curr.liked} Name: {curr.songName} 
+          </h1>
+        </div>
+        )
+      })}
+      
     </div>
   );
 }
