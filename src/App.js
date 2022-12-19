@@ -1,8 +1,6 @@
-import logo from "./logo.svg";
 import "./App.css";
 import anime from "animejs";
-import { makeStyles } from "@material-ui/core/styles";
-import { TextField } from "@material-ui/core";
+
 //import backend from "./backend.js";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -207,7 +205,7 @@ function App() {
   const [playListHook, changePlayList] = useState([]);
 
   function playListMaker() {
-    if (offset == -1) {
+    if (offset === -1) {
       console.log("No song selected");
       return;
     }
