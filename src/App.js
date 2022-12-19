@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.scss";
 import anime from "animejs";
 
 //import backend from "./backend.js";
