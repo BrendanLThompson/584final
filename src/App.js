@@ -8,7 +8,6 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import $ from 'jquery';
-import PlayList from "./PlayList";
 
 const wrapper = document.getElementById("tiles");
 let columns = 0,
