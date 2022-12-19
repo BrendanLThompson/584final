@@ -1,12 +1,25 @@
 import "./App.scss";
 import anime from "animejs";
-
-//import backend from "./backend.js";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import $ from "jquery";
 import Snackbar from "@mui/material/Snackbar";
+
+const background = document.getElementById("background");
+const getRandomNumber = (limit) => {
+  return Math.floor(Math.random() * limit);
+};
+const setBackgroundColor = () => {
+  const h = getRandomNumber(360);
+  const randomColor = `hsl(${h}deg, 50%, 10%)`;
+  background.style.backgroundColor = randomColor;
+  background.style.color = randomColor;
+};
+setBackgroundColor();
+setInterval(() => {
+  setBackgroundColor();
+}, 1500);
 
 //Tile grid setup and toggling opacity
 const wrapper = document.getElementById("tiles");
