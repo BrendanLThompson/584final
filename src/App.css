@@ -120,6 +120,7 @@ body.toggled > #tiles > .tile:hover {
   min-height: 40px;
   padding: 20px;
   padding-bottom: 20px;
+  display: block;
 }
 .btn:hover {
   background: rgb(114, 175, 211);
@@ -140,21 +141,32 @@ body.toggled > #tiles > .tile:hover {
 .centered-btn {
   left: 50%;
   position: absolute;
-  top: 10%;
+  top: 7%;
   transform: translate(-50%, -50%);
   z-index: 3;
 }
-.centered-btnleft {
+.centered-btnright {
   left: 50%;
+  position: absolute;
+  top: 82%;
+  transform: translate(3%, -50%);
+  z-index: 3;
+}
+.centered-btnleft {
+  left: 25%;
   position: absolute;
   top: 82%;
   transform: translate(-50%, -50%);
 z-index: 3;
 }
-.centered-btnright {
+.centered-btnbot {
   left: 50%;
   position: absolute;
-  top: 70%;
+  top: 93%;
   transform: translate(-50%, -50%);
 z-index: 3;
+}
+.flex {   
+  top: 60%; 
+  transform: translate(0%, 15%);
 }

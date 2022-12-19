@@ -7,9 +7,10 @@ import { TextField } from "@material-ui/core";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
-import $ from 'jquery';
-import Snackbar from '@mui/material/Snackbar';
+import $ from "jquery";
+import Snackbar from "@mui/material/Snackbar";
 
+//Tile grid setup and toggling opacity
 const wrapper = document.getElementById("tiles");
 let columns = 0,
   rows = 0,
@@ -19,6 +20,8 @@ const toggle = () => {
 
   document.body.classList.toggle("toggled");
 };
+
+//handles anime js animation onclick
 const handleOnClick = (index) => {
   toggle();
 
@@ -46,42 +49,39 @@ const handleOnClick = (index) => {
   });
 };
 
+//checks if tile has been clicked
 const createTile = (index) => {
   const tile = document.createElement("div");
-
   tile.classList.add("tile");
-
   tile.style.opacity = toggled ? 0 : 1;
-
   tile.onclick = (e) => handleOnClick(index);
-
   return tile;
 };
 
+//creates array of tiles
 const createTiles = (quantity) => {
   Array.from(Array(quantity)).map((tile, index) => {
     wrapper.appendChild(createTile(index));
   });
 };
 
+//creates grid of tiles from arrays
 const createGrid = () => {
   wrapper.innerHTML = "";
-
   const size = document.body.clientWidth > 800 ? 100 : 500;
-
   columns = Math.floor((document.body.clientWidth / size) * 3);
   rows = Math.floor((document.body.clientHeight / size) * 3);
-
   wrapper.style.setProperty("--columns", columns);
   wrapper.style.setProperty("--rows", rows);
 
   createTiles(columns * rows);
 };
 
+//returns grid
 createGrid();
-
+//grid changes on window resize
 window.onresize = () => createGrid();
-
+//mui button styling
 const ColorButton = styled(Button)(() => ({
   backgroundColor: "rgb(60, 186, 146)",
   "&:hover": {
@@ -89,16 +89,13 @@ const ColorButton = styled(Button)(() => ({
   },
 }));
 
-
-
-
-var SpotifyWebApi = require('spotify-web-api-node');
+var SpotifyWebApi = require("spotify-web-api-node");
 
 var Spotify = new SpotifyWebApi();
 
-const playlistDoc = document.getElementById("playList")
+const playlistDoc = document.getElementById("playList");
 
-let seed = '?!';
+let seed = "?!";
 let offset = -1;
 let currData;
 const hash = window.location.hash
@@ -133,8 +130,6 @@ if (!_token) {
 
 let dev;
 
-
-
 function genQuery(length) {
   var result = "";
   var char = "abcdefghijklmnopqrstuvwxyz";
@@ -145,9 +140,7 @@ function genQuery(length) {
   return result;
 }
 
-
-
-var playList = []
+var playList = [];
 
 function App() {
   window.onSpotifyPlayerAPIReady = () => {
@@ -157,7 +150,7 @@ function App() {
         cb(_token);
       },
     });
-  
+
     // Playback status updates
     player.on("player_state_changed", (state) => {
       if (
@@ -169,19 +162,19 @@ function App() {
         randSong();
       }
     });
-  
+
     // Ready
     player.on("ready", (data) => {
       dev = data.device_id;
     });
-  
+
     // Connect to the player!
     player.connect();
   };
   function randSong() {
     seed = genQuery(2);
     offset = Math.floor(Math.random() * 500);
-  
+
     $.ajax({
       url:
         "https://api.spotify.com/v1/search?type=track&offset=" +
@@ -194,10 +187,13 @@ function App() {
       },
       success: function (data) {
         currData = data;
-        console.log(currData)
-  
+        console.log(currData);
+
         let track = data.tracks.items[0].uri;
-        $("#current-track-name-save").attr("data-song", data.tracks.items[0].uri);
+        $("#current-track-name-save").attr(
+          "data-song",
+          data.tracks.items[0].uri
+        );
         $("#current-track-name-save").attr("src");
         $("#embed-uri").attr(
           "src",
@@ -208,83 +204,77 @@ function App() {
     });
   }
 
-  
-const [playListHook, changePlayList] = useState([])
+  const [playListHook, changePlayList] = useState([]);
 
-function playListMaker() {
-  if(offset == -1) {
-    console.log("No song selected")
-    return;
-  }
-  playList.push({
-    offset: offset,
-    seed: seed,
-    liked: "",
-    songName: currData.tracks.items[0].name,
-    songURL: currData.tracks.items[0].external_urls.spotify,
-    artistURL: currData.tracks.items[0].artists[0].external_urls.spotify,
-    artists: currData.tracks.items[0].artists.map(temp => " " + temp.name),
-    id: currData.tracks.items[0].id
-  })
-  changePlayList(playList)
-  setOpenPlayList(true)
-  //updatePlayList();
-}
-
-function clearPlayList() {
-  playList = []
-  changePlayList(playList)
-  setOpenClear(true)
-}
-
-function addToSpotify() {
-  playList.map((curr) => {
-    $.ajax({
-      url:
-        "https://api.spotify.com/v1/me/tracks?ids=" + curr.id,
-      type: "PUT",
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", "Bearer " + "BQDTijiPMpzMDMYLQh7mSfTlC5krunAiNLtff7SvgADMsC9dDjEFrbx_evZ5l7u-Rc1KlIHuD5OG4ju-4SkaKU6WvSbbxv80AdK6PAQ8INJsgwdP6mMQZXNE6QJnZvLS-BnCES3-jB3QYBHEUN_c_f3tz2g5f6Pul9wwMUuia8bSRW94nwYfAUkfcrnWRdNVM-JguYy2AbhXTvOrD8-iH-8C6wMJ01Hv4UbrG-vO6Koi-6Sl1Cf0eg");
-      },
-      success: function (data) {
-        console.log(data)
-      },
+  function playListMaker() {
+    if (offset == -1) {
+      console.log("No song selected");
+      return;
+    }
+    playList.push({
+      offset: offset,
+      seed: seed,
+      liked: "",
+      songName: currData.tracks.items[0].name,
+      songURL: currData.tracks.items[0].external_urls.spotify,
+      artistURL: currData.tracks.items[0].artists[0].external_urls.spotify,
+      artists: currData.tracks.items[0].artists.map((temp) => " " + temp.name),
+      id: currData.tracks.items[0].id,
     });
-  });
-  setOpenSpotify(true)
-}
+    changePlayList(playList);
+    setOpenPlayList(true);
+    //updatePlayList();
+  }
 
-const [open1, setOpenPlayList] = useState(false);
-const [open2, setOpenSpotify] = useState(false);
-const [open3, setOpenClear] = useState(false);
+  function clearPlayList() {
+    playList = [];
+    changePlayList(playList);
+    setOpenClear(true);
+  }
 
-const handleClose = () => {
-  setOpenPlayList(false);
-  setOpenClear(false);
-  setOpenSpotify(false);
-};
+  function addToSpotify() {
+    playList.map((curr) => {
+      $.ajax({
+        url: "https://api.spotify.com/v1/me/tracks?ids=" + curr.id,
+        type: "PUT",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader(
+            "Authorization",
+            "Bearer " +
+              "BQDTijiPMpzMDMYLQh7mSfTlC5krunAiNLtff7SvgADMsC9dDjEFrbx_evZ5l7u-Rc1KlIHuD5OG4ju-4SkaKU6WvSbbxv80AdK6PAQ8INJsgwdP6mMQZXNE6QJnZvLS-BnCES3-jB3QYBHEUN_c_f3tz2g5f6Pul9wwMUuia8bSRW94nwYfAUkfcrnWRdNVM-JguYy2AbhXTvOrD8-iH-8C6wMJ01Hv4UbrG-vO6Koi-6Sl1Cf0eg"
+          );
+        },
+        success: function (data) {
+          console.log(data);
+        },
+      });
+    });
+    setOpenSpotify(true);
+  }
+
+  const [open1, setOpenPlayList] = useState(false);
+  const [open2, setOpenSpotify] = useState(false);
+  const [open3, setOpenClear] = useState(false);
+
+  const handleClose = () => {
+    setOpenPlayList(false);
+    setOpenClear(false);
+    setOpenSpotify(false);
+  };
 
   return (
-    <div>
-      <div id="space2">
-        <ColorButton
-          variant="contained"
-          id="clearPlayList"
-          className="btn" onClick = {clearPlayList}
-        >
-          Clear PlayList
-        </ColorButton>
-      </div>
-      <div id="space" className="centered-btn">
+    <div id="workspace">
+      <div id="space" class="centered-btn">
         <ColorButton
           variant="contained"
           id="btn"
-          className="btn" onClick={randSong}
+          class="btn"
+          onClick={randSong}
         >
           Get a Random Song
         </ColorButton>
       </div>
-      <div className="flex">
+      <div class="flex">
         <iframe
           id="embed-uri"
           width="500"
@@ -293,41 +283,53 @@ const handleClose = () => {
           allow="encrypted-media"
         ></iframe>
       </div>
-      <div id="space2" className="centered-btnleft">
+      <div id="space2" class="centered-btnleft">
         <ColorButton
           variant="contained"
           id="addPlayList"
-          className="btn" onClick = {playListMaker}
+          class="btn"
+          onClick={playListMaker}
         >
-          Add Song To PlayList
+          Add Song to Playlist
         </ColorButton>
       </div>
-      <div id="space2" className="centered-btnright">
+      <div id="space2" class="centered-btnright">
         <ColorButton
           variant="contained"
           id="addToSpotify"
-          className="btn" onClick = {addToSpotify}
+          class="btn"
+          onClick={addToSpotify}
         >
-          Add Songs to Spotify
+          Add Song to Spotify
+        </ColorButton>
+      </div>
+      <div id="space2" class="centered-btnbot">
+        <ColorButton
+          variant="contained"
+          id="clearPlayList"
+          class="btn"
+          onClick={clearPlayList}
+        >
+          Clear PlayList
         </ColorButton>
       </div>
       <Snackbar
         open={open1}
-        autoHideDuration={6000}
+        autoHideDuration={1000}
         onClose={handleClose}
         message="Song Added To PlayList"
         //action={action}
       />
       <Snackbar
         open={open3}
-        autoHideDuration={6000}
+        autoHideDuration={1000}
         onClose={handleClose}
         message="PlayList Cleared"
         //action={action}
       />
       <Snackbar
         open={open2}
-        autoHideDuration={6000}
+        autoHideDuration={1000}
         onClose={handleClose}
         message="Songs Added To Spotify"
         //action={action}
