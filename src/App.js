@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import $ from 'jquery';
+import Snackbar from '@mui/material/Snackbar';
 
 const wrapper = document.getElementById("tiles");
 let columns = 0,
@@ -93,11 +94,9 @@ const ColorButton = styled(Button)(() => ({
 
 var SpotifyWebApi = require('spotify-web-api-node');
 
-// credentials are optional
 var Spotify = new SpotifyWebApi();
 
-
-  const playlistDoc = document.getElementById("playList")
+const playlistDoc = document.getElementById("playList")
 
 let seed = '?!';
 let offset = -1;
@@ -211,6 +210,7 @@ function App() {
 
   
 const [playListHook, changePlayList] = useState([])
+
 function playListMaker() {
   if(offset == -1) {
     console.log("No song selected")
@@ -227,56 +227,14 @@ function playListMaker() {
     id: currData.tracks.items[0].id
   })
   changePlayList(playList)
+  setOpenPlayList(true)
   //updatePlayList();
-}
-
-function removeSong(curr) {
-  playList.splice(curr,1)
-  changePlayList(playList)
-  //updatePlayList();
-}
-function playSong(curr) {
-  $.ajax({
-    url:
-      "https://api.spotify.com/v1/search?type=track&offset=" +
-      playList[curr].offset +
-      "&limit=2&q=" +
-      playList[curr].seed,
-    type: "GET",
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("Authorization", "Bearer " + _token);
-    },
-    success: function (data) {
-      currData = data;
-      let track = data.tracks.items[0].uri;
-      $("#current-track-name-save").attr("data-song", data.tracks.items[0].uri);
-      $("#current-track-name-save").attr("src");
-      $("#embed-uri").attr(
-        "src",
-        "https://open.spotify.com/embed/track/" + data.tracks.items[0].id
-      );
-      $("#current-track-name-save").css("display", "block");
-    },
-  });
-}
-
-function changeLike(curr) {
-  playList[curr].liked == "&#x2665" ? playList[curr].liked = "" : playList[curr].liked = "&#x2665";
-  changePlayList(playList)
-  //updatePlayList();
-}
-
-function openSongInSpotify(curr) {
-  window.open(playList[curr].songURL)
-}
-
-function openArtistInSpotify(curr) {
-  window.open(playList[curr].artistURL)
 }
 
 function clearPlayList() {
   playList = []
   changePlayList(playList)
+  setOpenClear(true)
 }
 
 function addToSpotify() {
@@ -293,8 +251,18 @@ function addToSpotify() {
       },
     });
   });
+  setOpenSpotify(true)
 }
 
+const [open1, setOpenPlayList] = useState(false);
+const [open2, setOpenSpotify] = useState(false);
+const [open3, setOpenClear] = useState(false);
+
+const handleClose = () => {
+  setOpenPlayList(false);
+  setOpenClear(false);
+  setOpenSpotify(false);
+};
 
   return (
     <div>
@@ -343,17 +311,27 @@ function addToSpotify() {
           Add Songs to Spotify
         </ColorButton>
       </div>
-      {playListHook.map((curr, ind) => {
-        {console.log(curr)}
-        return (
-        <div id = {curr}>
-          <h1>
-          {curr.liked} Name: {curr.songName} 
-          </h1>
-        </div>
-        )
-      })}
-      
+      <Snackbar
+        open={open1}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Song Added To PlayList"
+        //action={action}
+      />
+      <Snackbar
+        open={open3}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="PlayList Cleared"
+        //action={action}
+      />
+      <Snackbar
+        open={open2}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Songs Added To Spotify"
+        //action={action}
+      />
     </div>
   );
 }
