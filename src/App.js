@@ -244,6 +244,9 @@ function App() {
   }
 
   function addToSpotify() {
+    if(playList.length === 0) {
+      return
+    }
     playList.map((curr) => {
       $.ajax({
         url: "https://api.spotify.com/v1/me/tracks?ids=" + curr.id,
@@ -252,7 +255,7 @@ function App() {
           xhr.setRequestHeader(
             "Authorization",
             "Bearer " +
-              "BQDTijiPMpzMDMYLQh7mSfTlC5krunAiNLtff7SvgADMsC9dDjEFrbx_evZ5l7u-Rc1KlIHuD5OG4ju-4SkaKU6WvSbbxv80AdK6PAQ8INJsgwdP6mMQZXNE6QJnZvLS-BnCES3-jB3QYBHEUN_c_f3tz2g5f6Pul9wwMUuia8bSRW94nwYfAUkfcrnWRdNVM-JguYy2AbhXTvOrD8-iH-8C6wMJ01Hv4UbrG-vO6Koi-6Sl1Cf0eg"
+              "BQDuz-0Amyo1KBZth3mbJ8ZEKkMOtd7I6hzsT1g8ZREkoiE0qAh5bABNXHLo0NomheCqVXU-omBHLsvFLaZ-LaCkUYhaAmXM3H5qz583Bs5-5Kw7C5obD5z91tODQhpHXaYq6p5TNoV1DMe3aWOD2t6Jq7mXUCx9NPXP6YLV8Jht3_CcXSGbnVvab82b6qbvsTgUjHhDWNSvhQUQPjmzZJ9z3hbHWAJ8uzpEp8kMMjvbBPqNqgw3wg"
           );
         },
         success: function (data) {
@@ -261,6 +264,16 @@ function App() {
       });
     });
     setOpenSpotify(true);
+  }
+
+  const addToSpotifyHandler = () => {
+    addToSpotify()
+    addToSpotify()
+  }
+
+  const playListMakerHandler = () => {
+    playListMaker()
+    playListMaker()
   }
 
   const [open1, setOpenPlayList] = useState(false);
@@ -299,7 +312,7 @@ function App() {
           variant="contained"
           id="addPlayList"
           class="btn"
-          onClick={playListMaker}
+          onClick={playListMakerHandler}
         >
           Add Song to Playlist
         </ColorButton>
@@ -309,7 +322,7 @@ function App() {
           variant="contained"
           id="addToSpotify"
           class="btn"
-          onClick={addToSpotify}
+          onClick={addToSpotifyHandler}
         >
           Add Song to Spotify
         </ColorButton>
